@@ -1,44 +1,49 @@
-# main.tf
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.0.2"
+    }
+  }
 
+  required_version = ">= 1.1.0"
+}
 
-
-# Zasób grupy zasobów
-resource "azurerm_resource_group" "example" {
+resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
-  location = var.resource_group_location
+  location = "westus2"
 }
-
-# Zasób konta magazynu
-resource "azurerm_storage_account" "example" {
+resource "azurerm_storage_account" "sa" {
   name                     = var.storage_account_name
-  location                 = azurerm_resource_group.example.location
-  }
-
-# Zasób planu usługi
-resource "azurerm_app_service_plan" "example" {
-  name                = var.service_plan_name
-  location            = azurerm_resource_group.example.location
-
-  sku {
-    tier = var.service_plan_sku_tier
-    size = var.service_plan_sku_size
-  }
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = var.storage_account_tier
+  account_replication_type = var.storage_account_replication_type
 }
 
-# Zasób funkcji aplikacji Azure (Linux)
-resource "azurerm_function_app" "example" {
-  name                       = var.function_app_name
-  location                   = azurerm_resource_group.example.location
+resource "azurerm_service_plan" "azs" {
+
+  name                = var.app_service_plan_name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku_name = var.sku_name
+  os_type = var.os_type
 }
 
-# Zasób funkcji aplikacji
-resource "azurerm_function_app_function" "example" {
-  name                     = var.function_name
-  resource_group_name      = azurerm_resource_group.example.name
-  functionapp_id           = azurerm_function_app.example.id
-  app_settings             = { }
-  storage_account_name     = azurerm_storage_account.example.name
-  storage_account_key      = azurerm_storage_account.example.primary_access_key
-  storage_account_container_name = azurerm_function_app.example.name
+
+resource "azurerm_function_app" "af" {
+  name                = var.function_app_name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  storage_account_access_key = azurerm_storage_account.sa.primary_access_key
+  storage_account_name = azurerm_storage_account.sa.name
+  app_service_plan_id = azurerm_service_plan.azs.id
+  version             = "~3"
+}
+
+resource "azurerm_function_app_function" "aff" {
+  name                       = var.function_name
+  config_json                = "null"
+  function_app_id            = azurerm_function_app.af.id
 }
 

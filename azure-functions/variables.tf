@@ -1,15 +1,47 @@
 variable "resource_group_name" {
-	default = "ResourceGroupName"
+  type    = string
+  default = "example-rg"
 }
+
+variable "location" {
+  type    = string
+  default = "East US"
+}
+
 variable "storage_account_name" {
-	default = "StorageACCName"
+  type    = string
+  default = "examplestorage"
 }
-variable "service_plan_name" {
-	default = "ServicePlanName"
+
+variable "storage_account_tier" {
+  description = "Typ konta magazynu"
 }
+
+variable "storage_account_replication_type" {
+  description = "Typ replikacji konta magazynu"
+}
+
+variable "app_service_plan_name" {
+  description = "Nazwa planu uslugi"
+}
+
 variable "function_app_name" {
-	default = "FunctionAppName"
+  description = "Nazwa aplikacji"
 }
+
 variable "function_name" {
-	default = "FunctionName"
+  description = "nazwa funkcji"
 }
+variable "storage_account_access_key" {
+  description = "Klucz dostepowy magazynu"
+}
+variable "os_type" {
+  type    = string
+  default = "Linux"
+}
+
+variable "sku_name" {
+  type    = string
+  default = "F1" 
+}
+
