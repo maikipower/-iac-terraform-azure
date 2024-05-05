@@ -1,16 +1,13 @@
 variable "resource_group_name" {
-  type    = string
-  default = "example-rg"
+  description = "Nazwa grupy zasobow"
 }
 
 variable "location" {
-  type    = string
-  default = "East US"
+  description = "Lokalizacja"
 }
 
 variable "storage_account_name" {
-  type    = string
-  default = "examplestorage"
+  description = "Nazwa konta magazynu"
 }
 
 variable "storage_account_tier" {
